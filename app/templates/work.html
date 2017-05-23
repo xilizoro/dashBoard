@@ -1,0 +1,78 @@
+<div id="work_page" ng-controller='ImageController' style="margin-top: 10px; margin-right: 10px; ">
+    <div id="work_title" class="row">
+        <div id="btn_group" class="col-xs-12 col-md-12 col-lg-6">
+            <div class="btn-group" uib-dropdown is-open="status.isopen">
+                <button id="work_drop_down" type="button" class="btn btn-info" uib-dropdown-toggle ng-disabled="disabled" style="height:36px;font-size:1.1em;padding:2px 12px">
+                    Select design <span class="caret"></span>
+                </button>
+                <ul class="uib-dropdown-menu" role="menu" aria-labelledby="single-button">
+                    <li role="menuitem" class="work_pointer"><a style="font-size:1.3em;" ng-click="togglePage('list')">list</a></li>
+                    <li role="menuitem" class="work_pointer"><a style="font-size:1.3em;" ng-click="togglePage('card')">card</a></li>
+                </ul>
+            </div>
+            <button class="btn btn-danger" style="height:36px;font-size:1em;padding:2px 12px;" ng-click="toggleAdd()">Add Item</button>
+        </div>
+        <div class="row col-xs-12 col-md-12 col-lg-6">
+            <div class="col-xs-12 col-md-3 col-lg-3 " style="padding-right:0px;">
+                <input type="text" placeholder='Name' name="name" ng-model='filter_name' class="work-input"> </div>
+            <div class="col-xs-12 col-md-3 col-lg-3" style="padding-right:0px;">
+                <input type="text" placeholder='Author' name="author" ng-model='filter_author' class="work-input"> </div>
+            <div class="col-xs-12 col-md-3 col-lg-3" style="padding-right:0px;">
+                <input type="text" placeholder='Comment' name="comment" ng-model='filter_comment' class="work-input">
+            </div>
+        </div>
+    </div>
+    <div ng-show="myDropDown==='list'">
+        <table class='table table-hover'>
+            <thead>
+                <th ng-click="reverse=true;order('title', reverse)" style = "cursor: pointer;">Name</th>
+                <th ng-click="reverse=!reverse;order('author', reverse)" style= "cursor: pointer;">author</a>
+                </th>
+                <th ng-click="reverse=!reverse;order('like',reverse)" style="cursor: pointer;" >Like</th>
+                <th ng-click="reverse=!reverse;order('comment',reverse)" style="cursor: pointer;" >Comment</th>
+                <th>Modify</th>
+                <th>Remove</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="i in images | filter: filter_name |filter: filter_author | filter: filter_comment ">
+                    <td>{{i.title}}</td>
+                    <td>{{i.author}}</td>
+                    <td>{{i.like}}</td>
+                    <td>{{i.comment}}</td>
+                    <td><a ng-click='toggleEdit(image)' class="work_pointer">Edit</a></td>
+                    <td><a ng-click='removeImage($index)' class="work_pointer">Delete</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div ng-show="myDropDown==='card'" id="drop_down_card" class="row">
+        <div class="col-xs-12 col-ms-4 col-md-4 col-lg-4" ng-repeat="i in images | filter: filter_name |filter: filter_author | filter: filter_comment |orderBy: 'id'">
+            <div class=" thumbnail" style="border-style:none;margin-bottom:30px;text-align:left;">
+                <img ng-src={{i.image}}></img>
+                <div>{{i.id}} : {{i.title}}</div>
+                <div style="color:green">
+                    {{i.author}}
+                </div>
+                <div>{{i.like}}</div>
+                <div>{{i.comment}}</div>
+                <div class="work_link">
+                    <a ng-click='toggleEdit(i)'>Edit |</a>
+                    <a ng-click='removeImage($index)'>Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- add and edit items, using custom directive -->
+    <item-dialog title="Add Item" visible="addVisable" item="editItem"></item-dialog>
+    <item-dialog title="Edit Item" visible="editVisable" item="editItem"></item-dialog>
+
+    <!-- delete item using popout -->
+    <div id="work_delete_item_body" ng-show="isdeleteVisible"></div>
+    <div id="work_delete_item" ng-show="isdeleteVisible">
+        <h2>Delete item?</h2>
+        <p>This will permanently delete the item from the table and the action cannot be reversed. If you are sure, please comfirn with the appropriate action</p>
+        <button class="btn btn-lg btn-danger" ng-click="Submit_delete($index)">Yes, I am sure</button>
+        <button class="btn btn-lg btn-default" ng-click="Cancel_delete()">Cancel</button>
+    </div>
+
+</div>
